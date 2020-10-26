@@ -1,3 +1,8 @@
+def crearArray(dato):
+	listaAux = []
+	for i in dato:
+		listaAux.append(int(i))
+	return listaAux
 def TomaDatos():
 	NM = 0
 	NA = 0
@@ -7,6 +12,7 @@ def TomaDatos():
 	DS = 0
 	contador = 0
 	listaA = []
+	listaB = []
 	file = open('Instancia.txt', 'r')
 	for linea in file.readlines():
 		if("NumberOfMeetings = " in linea):
@@ -24,12 +30,13 @@ def TomaDatos():
 		elif("Agents ("+str(contador)+"):" in linea):
 			separador = " "
 			separado = linea[12:len(linea)].split(separador)
-			listaAux = []
-			for i in separado:
-				listaAux.append(int(i))
-			listaA.append(listaAux)
+			listaA.append(crearArray(separado))
 			contador+=1
-	print(listaA)
+		elif(": " in linea):
+			linea=linea.split(": ")
+			linea=linea[1].split(" ")
+			listaB.append(crearArray(linea))
+	print(listaB)
 	#listaA = listaAgentes(NA, NMPA)
 	file.close()
 TomaDatos()
