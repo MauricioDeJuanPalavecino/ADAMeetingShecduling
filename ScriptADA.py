@@ -6,19 +6,30 @@ def TomaDatos():
 	MaxD = 0
 	DS = 0
 	contador = 0
+	listaA = []
 	file = open('Instancia.txt', 'r')
 	for linea in file.readlines():
 		if("NumberOfMeetings = " in linea):
 			NM = int(linea[18:21])
-		if("NumberOfAgents = " in linea):
+		elif("NumberOfAgents = " in linea):
 			NA = int(linea[17:20])
-		if("NumberOfMeetingPerAgent = " in linea):
+		elif("NumberOfMeetingPerAgent = " in linea):
 			NMPA = int(linea[26:30])
-		if("MinDisTimeBetweenMeetings = " in linea):
+		elif("MinDisTimeBetweenMeetings = " in linea):
 			MinD = int(linea[27:30])
-		if("MaxDisTimeBetweenMeetings = " in linea):
+		elif("MaxDisTimeBetweenMeetings = " in linea):
 			MaxD = int(linea[27:30])
-		if("DomainSize = " in linea):
-			DS = int(linea[13:16])
+		elif("DomainSize = " in linea):
+			DS = int(linea[13:16])	
+		elif("Agents ("+str(contador)+"):" in linea):
+			separador = " "
+			separado = linea[12:60].split(separador)
+			listaAux = []
+			for i in separado:
+				listaAux.append(int(i))
+			listaA.append(listaAux)
+			contador+=1
+	print(listaA)
+	#listaA = listaAgentes(NA, NMPA)
 	file.close()
 TomaDatos()
