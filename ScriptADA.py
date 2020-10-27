@@ -1,3 +1,16 @@
+import sys
+NM = 0
+NA = 0
+NMPA = 0
+MinD = 0
+MaxD = 0
+DS = 0
+MeetingsDistances = list()
+AgentsMeetings = list()
+def checkArgs(*args):
+	if len(sys.argv) < 2:
+		print("ERROR: Instancia no especificada")
+
 def crearArray(dato):
 	listaAux = []
 	for i in dato:
@@ -15,46 +28,38 @@ def paralelo(i, j, listaAgentes, NA):
 			return False
 	return noAtiendenAmbos
 def Resolucion(NM, NA, NMPA, MinD, MaxD,DS, listaAgentes, listaCoste):
-	for i in range(0,NM):
-		for j in range(j=i+1,NM):
-			esParalelo = paralelo(i,j,listaAgentes,NA)
-			if(!esParalelo):
-				#esto debe ser recursivo en esta parte es la unica forma
-				# |meeting[m1] - meeting[m2]| > distancia[m1][m2]
-				# encuentracamino 
-def TomaDatos():
-	NM = 0
-	NA = 0
-	NMPA = 0
-	MinD = 0
-	MaxD = 0
-	DS = 0
-	contador = 0
-	listaAgentes = []
-	listaCoste = []
-	file = open('Instancia.txt', 'r')
-	for linea in file.readlines():
-		if("NumberOfMeetings = " in linea):
-			NM = int(linea[18:len(linea)])
-		elif("NumberOfAgents = " in linea):
-			NA = int(linea[17:len(linea)])
-		elif("NumberOfMeetingPerAgent = " in linea):
-			NMPA = int(linea[26:len(linea)])
-		elif("MinDisTimeBetweenMeetings = " in linea):
-			MinD = int(linea[27:len(linea)])
-		elif("MaxDisTimeBetweenMeetings = " in linea):
-			MaxD = int(linea[27:len(linea)])
-		elif("DomainSize = " in linea):
-			DS = int(linea[13:len(linea)])	
-		elif("Agents ("+str(contador)+"):" in linea):
-			separador = " "
-			separado = linea[12:len(linea)].split(separador)
-			listaAgentes.append(crearArray(separado))
-			contador+=1
-		elif(": " in linea):
-			linea=linea.split(": ")
-			linea=linea[1].split(" ")
-			listaCoste.append(crearArray(linea))
-	file.close()
+	limiteMax = encuentraCamino(NM, listaCoste)
 
-TomaDatos()
+def getNumbers(Instancia): #Función dedicada a obtener los datos del MSP
+	try:
+		#Inicar Lector------------------------------------------------------------------#
+		file = open(Instancia, 'r')
+		content = file.read()
+		contentList = content.split('\n\n')
+		#Obtener Parametros-------------------------------------------------------------#
+		PrettyNumbers = [int(i) for i in contentList[0].split() if i.isdigit()]
+		#Obtener y establecer las reuniones de los agentes------------------------------#
+		for agent in contentList[1].split('\n'):
+			n = [int(i) for i in agent.split() if i.isdigit()]
+			if n:
+				AgentsMeetings.append(n)
+		#Obtener y establecer las distancias entre las reuniones------------------------#
+		for meetings in contentList[2].split('\n'):
+			n = [int(i) for i in meetings.split() if i.isdigit()]
+			if n:
+				MeetingsDistances.append(n)
+		MeetingsDistances.pop(0)
+		file.close()
+		#Establecer Parametros----------------------------------------------------------#
+		NM 		= PrettyNumbers[0]
+		NA		= PrettyNumbers[1]
+		NMPA	= PrettyNumbers[2]
+		MinD 	= PrettyNumbers[3]
+		MaxD 	= PrettyNumbers[4]
+		DS		= PrettyNumbers[5]
+		#-------------------------------------------------------------------------------#
+	except:
+		print("ERROR: Instancia no encontrada")
+
+checkArgs()
+getNumbers(sys.argv[1])
