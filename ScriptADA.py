@@ -3,6 +3,20 @@ def crearArray(dato):
 	for i in dato:
 		listaAux.append(int(i))
 	return listaAux
+def encuentraCamino(NM,listaCoste):
+	meetingsPath = 0
+	for i in (NM-1):
+		meetingsPath = meetingsPath+listaCoste[i][i+1]+1
+	return meetingsPath	
+def paralelo(i, j, listaAgentes, NA):
+	noAtiendenAmbos = True
+	for a in NA:
+		if(listaAgentes[a][i] == 1 and listaAgentes[a][j] == 1):
+			return False
+	return noAtiendenAmbos
+def Resolucion(NM, NA, NMPA, MinD, MaxD,DS, listaAgentes, listaCoste):
+	limiteMax = encuentraCamino(NM, listaCoste)
+
 def TomaDatos():
 	NM = 0
 	NA = 0
@@ -11,8 +25,8 @@ def TomaDatos():
 	MaxD = 0
 	DS = 0
 	contador = 0
-	listaA = []
-	listaB = []
+	listaAgentes = []
+	listaCoste = []
 	file = open('Instancia.txt', 'r')
 	for linea in file.readlines():
 		if("NumberOfMeetings = " in linea):
@@ -30,17 +44,12 @@ def TomaDatos():
 		elif("Agents ("+str(contador)+"):" in linea):
 			separador = " "
 			separado = linea[12:len(linea)].split(separador)
-			listaA.append(crearArray(separado))
+			listaAgentes.append(crearArray(separado))
 			contador+=1
 		elif(": " in linea):
 			linea=linea.split(": ")
 			linea=linea[1].split(" ")
-			listaB.append(crearArray(linea))
-	print(listaB)
-	#listaA = listaAgentes(NA, NMPA)
+			listaCoste.append(crearArray(linea))
 	file.close()
-TomaDatos()
-string1 = "hola mundo"
-contador123 =len(string1)
-print(contador123)
 
+TomaDatos()
