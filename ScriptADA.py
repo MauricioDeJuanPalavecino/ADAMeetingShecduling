@@ -15,8 +15,13 @@ def paralelo(i, j, listaAgentes, NA):
 			return False
 	return noAtiendenAmbos
 def Resolucion(NM, NA, NMPA, MinD, MaxD,DS, listaAgentes, listaCoste):
-	limiteMax = encuentraCamino(NM, listaCoste)
-
+	for i in range(0,NM):
+		for j in range(j=i+1,NM):
+			esParalelo = paralelo(i,j,listaAgentes,NA)
+			if(!esParalelo):
+				#esto debe ser recursivo en esta parte es la unica forma
+				# |meeting[m1] - meeting[m2]| > distancia[m1][m2]
+				# encuentracamino 
 def TomaDatos():
 	NM = 0
 	NA = 0
