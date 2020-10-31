@@ -17,17 +17,35 @@ def crearArray(dato):
 	for i in dato:
 		listaAux.append(int(i))
 	return listaAux
-def encuentraCamino(NM,listaCoste):
-	meetingsPath = 0
-	for i in range(0,NM-1):
-		meetingsPath = meetingsPath+listaCoste[i][i+1]+1
+def encuentraCoste(meeting1,meeting2):
+	meetingsPath=0
+	if(meeting1!=meeting2):
+		m1=MeetingsDistances[meeting1]
+		meetingsPath+=m1[meeting2]+1
 	return meetingsPath	
-def paralelo(i, j, listaAgentes, NA):
+def paralelo(j, agenteA, agenteB):#numero>0
 	noAtiendenAmbos = True
-	for a in range(0,NA):
-		if(listaAgentes[a][i] == 1 and listaAgentes[a][j] == 1):
-			return False
+	if(agenteA!=agenteB):
+		a0=AgentsMeetings[agenteA]
+		a1=AgentsMeetings[agenteB]
+		if(a0[j]!=a1[j]):
+			noAtiendenAmbos=False
 	return noAtiendenAmbos
+def comprobacion(agenteB):
+	retorno=True
+	total=0
+	a1=AgentsMeetings[agenteB]
+	for j in range(1,len(a1)):
+		for i in AgentsMeetings:
+			if(agenteB!=i):
+				if(paralelo(j,agenteB,i)):
+					total-=1
+		if(j<len(a1)-1):
+			total+=encuentraCoste(a1[j],a1[j+1])
+	print(total)
+	if(total>DS):
+		retorno=False
+	return retorno
 def encontrarAgentes(meeting):
 	retorno=list()
 	for i in range(0,len(AgentsMeetings)):
@@ -59,33 +77,32 @@ def getNumbers(Instancia): #Función dedicada a obtener los datos del MSP
 			n = [int(i) for i in agent.split() if i.isdigit()]
 			if n:
 				aux=agent.split(':')
-				AgentsMeetings[aux[0]]=aux[1]
+				AgentsMeetings[int(aux[0])]=aux[1].split(' ')
 		#Obtener y establecer las distancias entre las reuniones------------------------#
 		for meetings in contentList[2].split('\n'):
 			n = [int(i) for i in meetings.split() if i.isdigit()]
 			if n:
 				aux=meetings.split(':')
 				if(len(aux[0])<=2):
-					MeetingsDistances[aux[0]]=n
+					MeetingsDistances[int(aux[0])]=n
 		file.close()
-		#Establecer Parametros----------------------------------------------------------#
-		NM 		= PrettyNumbers[0]
-		NA		= PrettyNumbers[1]
-		NMPA	= PrettyNumbers[2]
-		MinD 	= PrettyNumbers[3]
-		MaxD 	= PrettyNumbers[4]
-		DS		= PrettyNumbers[5]
+		return PrettyNumbers
 		#-------------------------------------------------------------------------------#
 	except:
 		print("ERROR: Instancia no encontrada")
 
 checkArgs()
-getNumbers(sys.argv[1])
-for i in AgentsMeetings:
-	print(i+':'+AgentsMeetings[i])
-print("---------------------")
-for i in MeetingsDistances:
-	print(str(i)+':'+str(MeetingsDistances[i]))
+test=getNumbers(sys.argv[1])
+
+NM= test[0]
+NA= test[1]
+NMPA= test[2]
+MinD= test[3]
+MaxD= test[4]
+DS= test[5]
+#print(DS)
+#for i in AgentsMeetings:
+#	print(comprobacion(i))
 #Resolucion()
 #listaFinal = [[M0,T0],[M1,T0],[M2,T1],[M3,T5]......[M_M,T_N]]
 #costeFinal = 1 + 2 +3 +1 +2 +4 - 1 -1  = 11

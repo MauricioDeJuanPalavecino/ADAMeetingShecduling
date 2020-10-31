@@ -1,4 +1,4 @@
-NumberOfMeetings = 201415125424141241
+NumberOfMeetings = 20
 NumberOfAgents = 9
 NumberOfMeetingPerAgent = 5
 MinDisTimeBetweenMeetings = 1
