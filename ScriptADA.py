@@ -7,7 +7,7 @@ MaxD = 0
 DS = 0
 MeetingsDistances = {}
 AgentsMeetings = {}
-result=list()
+result={}
 def checkArgs(*args):
 	if len(sys.argv) < 2:
 		print("ERROR: Instancia no especificada")
@@ -31,7 +31,13 @@ def paralelo(j, agenteA, agenteB):#numero>0
 		if(a0[j]!=a1[j]):
 			noAtiendenAmbos=False
 	return noAtiendenAmbos
-def comprobacion(agenteB):
+def encontrarAgentes(meeting):
+	retorno=list()
+	for i in AgentsMeetings:
+		if(meeting in AgentsMeetings[i]):
+			retorno.append(i)
+	return retorno
+"""def comprobacion(agenteB):
 	retorno=True
 	total=0
 	a1=AgentsMeetings[agenteB]
@@ -45,13 +51,22 @@ def comprobacion(agenteB):
 	print(total)
 	if(total>DS):
 		retorno=False
-	return retorno
-def encontrarAgentes(meeting):
-	retorno=list()
-	for i in range(0,len(AgentsMeetings)):
-		if(meeting in AgentsMeetings[i]):
-			retorno.append(i)
-	return retorno
+	return retorno"""
+def orden():
+	aux={}
+	repetidos={}
+	unicos={}
+	for i in AgentsMeetings:
+		aux[i]=AgentsMeetings[i]
+	count=1
+	for i in aux:
+		test=encontrarAgentes(count)
+		if(len(test)>1):
+			repetidos[count]=test
+		else:
+			unicos[count]=test
+		count+=1
+	result[0]=unicos
 #def Resolucion():
 #	for i in AgentsMeetings:
 #		for j in i.values():
@@ -77,7 +92,7 @@ def getNumbers(Instancia): #Función dedicada a obtener los datos del MSP
 			n = [int(i) for i in agent.split() if i.isdigit()]
 			if n:
 				aux=agent.split(':')
-				AgentsMeetings[int(aux[0])]=aux[1].split(' ')
+				AgentsMeetings[aux[0]]=n
 		#Obtener y establecer las distancias entre las reuniones------------------------#
 		for meetings in contentList[2].split('\n'):
 			n = [int(i) for i in meetings.split() if i.isdigit()]
@@ -100,6 +115,7 @@ NMPA= test[2]
 MinD= test[3]
 MaxD= test[4]
 DS= test[5]
+orden()
 #print(DS)
 #for i in AgentsMeetings:
 #	print(comprobacion(i))
