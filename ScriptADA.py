@@ -6,8 +6,10 @@ MinD = 0
 MaxD = 0
 DS = 0
 MeetingsDistances = {}
+Agents = []
 AgentsMeetings = {}
-result={}
+result=list()
+Instance = sys.argv[1]
 def checkArgs(*args):
 	if len(sys.argv) < 2:
 		print("ERROR: Instancia no especificada")
@@ -17,56 +19,41 @@ def crearArray(dato):
 	for i in dato:
 		listaAux.append(int(i))
 	return listaAux
-def encuentraCoste(meeting1,meeting2):
-	meetingsPath=0
-	if(meeting1!=meeting2):
-		m1=MeetingsDistances[meeting1]
-		meetingsPath+=m1[meeting2]+1
-	return meetingsPath	
-def paralelo(j, agenteA, agenteB):#numero>0
-	noAtiendenAmbos = True
-	if(agenteA!=agenteB):
-		a0=AgentsMeetings[agenteA]
-		a1=AgentsMeetings[agenteB]
-		if(a0[j]!=a1[j]):
-			noAtiendenAmbos=False
-	return noAtiendenAmbos
+
+def getDistanceBetween(m1,m2):
+	return MeetingsDistances[m1][m2]
+
+def paralelo(j, agentA, agentB):#numero>0
+	return AgentsMeetings[agentA][j] == AgentsMeetings[agentB][j]
+
+def truncar(agent):
+	meetings = AgentsMeetings[agent]
+	NumberOfMeetings = len(meetings)
+	aux = 1
+	for i in range(0, NumberOfMeetings):
+		private = True
+		for j in AgentsMeetings:
+			if(j != agent):
+				if(meetings[i] in AgentsMeetings[j]):
+					private = False
+		if not private:
+			aux +=1
+		else: break
+	if (aux > NumberOfMeetings):
+		aux = NumberOfMeetings
+	timeslots = aux
+	print("aux: ", aux)
+	for j in range(0, aux):
+		if(j < aux - 1):
+			timeslots += getDistanceBetween(meetings[j], meetings[j+1])
+	return timeslots
+
 def encontrarAgentes(meeting):
 	retorno=list()
-	for i in AgentsMeetings:
+	for i in range(0,len(AgentsMeetings)):
 		if(meeting in AgentsMeetings[i]):
 			retorno.append(i)
 	return retorno
-"""def comprobacion(agenteB):
-	retorno=True
-	total=0
-	a1=AgentsMeetings[agenteB]
-	for j in range(1,len(a1)):
-		for i in AgentsMeetings:
-			if(agenteB!=i):
-				if(paralelo(j,agenteB,i)):
-					total-=1
-		if(j<len(a1)-1):
-			total+=encuentraCoste(a1[j],a1[j+1])
-	print(total)
-	if(total>DS):
-		retorno=False
-	return retorno"""
-def orden():
-	aux={}
-	repetidos={}
-	unicos={}
-	for i in AgentsMeetings:
-		aux[i]=AgentsMeetings[i]
-	count=1
-	for i in aux:
-		test=encontrarAgentes(count)
-		if(len(test)>1):
-			repetidos[count]=test
-		else:
-			unicos[count]=test
-		count+=1
-	result[0]=unicos
 #def Resolucion():
 #	for i in AgentsMeetings:
 #		for j in i.values():
@@ -79,8 +66,10 @@ def orden():
 #			aux=paralelo(i, n, AgentsMeetings, NA)
 #			if(aux):
 #				dist=encuentraCamino(0, MeetingsDistances)
+def Solve(NM, NA, NMPA, MinD, MaxD, DS, MeetingsDistancess, AgentsMeetings):
+	return 0
 def getNumbers(Instancia): #Función dedicada a obtener los datos del MSP
-	try:
+#	try:
 		#Inicar Lector------------------------------------------------------------------#
 		file = open(Instancia, 'r')
 		content = file.read()
@@ -92,7 +81,8 @@ def getNumbers(Instancia): #Función dedicada a obtener los datos del MSP
 			n = [int(i) for i in agent.split() if i.isdigit()]
 			if n:
 				aux=agent.split(':')
-				AgentsMeetings[aux[0]]=n
+				AgentsMeetings[aux[0]] = n
+#				AgentsMeetings[int(aux[0])]=aux[1].split(' ')
 		#Obtener y establecer las distancias entre las reuniones------------------------#
 		for meetings in contentList[2].split('\n'):
 			n = [int(i) for i in meetings.split() if i.isdigit()]
@@ -103,19 +93,20 @@ def getNumbers(Instancia): #Función dedicada a obtener los datos del MSP
 		file.close()
 		return PrettyNumbers
 		#-------------------------------------------------------------------------------#
-	except:
-		print("ERROR: Instancia no encontrada")
-
+#	except:
+#		print("ERROR: Instancia no encontrada")
 checkArgs()
-test=getNumbers(sys.argv[1])
-
+test = getNumbers(Instance)
 NM= test[0]
 NA= test[1]
 NMPA= test[2]
 MinD= test[3]
 MaxD= test[4]
 DS= test[5]
-orden()
+# Agente 0: tiempo en las reuniones + tiempo entre reuniones - casos paralelos
+# Agente 0: 5 + 6 - 8 = 3
+print(truncar("Agents (0)"))
+
 #print(DS)
 #for i in AgentsMeetings:
 #	print(comprobacion(i))
